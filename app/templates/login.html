@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <form>
+        <div>
+            <p id="error-message"></p>
+        </div>
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username"><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br>
+        <input type="submit" value="Login">
+    </form>
+
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/static/js/script.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(event) {
+                event.preventDefault();
+                
+                var username = $('#username').val();
+                var password = $('#password').val();
+                
+                login(username, password)
+                .done(function(response) {
+                    window.location.href = '/dashboard';
+                })
+                .fail(function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    var errorMessage = response.error;
+                    $('#error-message').text(errorMessage);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

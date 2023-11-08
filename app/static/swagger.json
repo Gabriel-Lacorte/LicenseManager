@@ -1,0 +1,285 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "License Manager",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Handles user authentication"
+    },
+    {
+      "name": "products",
+      "description": "Handles product creation and management"
+    },
+    {
+      "name": "keys",
+      "description": "Handles the creation and management of keys for the products"
+    }
+  ],
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login the user.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful."
+          },
+          "400": {
+            "description": "The input parameters were incorrect."
+          },
+          "401": {
+            "description": "Invalid username or password"
+          },
+          "403": {
+            "description": "You are already logged in."
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout the user.",
+        "responses": {
+          "200": {
+            "description": "Logout successful."
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "List All Products.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Create a new product",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "The input parameters were incorrect."
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Get product by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Could not find the product."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Delete product by id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted."
+          },
+          "404": {
+            "description": "Could not find the product."
+          }
+        }
+      }
+    },
+    "/api/keys/{key}": {
+      "get": {
+        "tags": [
+          "keys"
+        ],
+        "summary": "Get key.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Could not find the key."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "keys"
+        ],
+        "summary": "Delete key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key deleted successfully."
+          },
+          "404": {
+            "description": "Could not find the key."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "keys"
+        ],
+        "summary": "Increases the key period",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "period": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "The input parameters were incorrect."
+          },
+          "404": {
+            "description": "Could not find the key."
+          }
+        }
+      }
+    },
+    "/api/keys": {
+      "post": {
+        "tags": [
+          "keys"
+        ],
+        "summary": "Create a new key for a product",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "integer"
+                },
+                "period": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "The input parameters were incorrect."
+          }
+        }
+      }
+    }
+  }
+}

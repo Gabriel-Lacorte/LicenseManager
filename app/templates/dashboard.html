@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/static/js/script.js"></script>
+</head>
+<body>
+    <button id="logout">Logout</button>
+
+    <div>
+        <h2>Products</h2>
+        <form>
+            <div>
+                <p id="error-message"></p>
+            </div>
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="description">Description:</label><br>
+            <input type="text" id="description" name="description"><br>
+            <input type="submit" value="Create Product">
+        </form>
+        <table id="product-list">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Delete</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <script>
+    $(document).ready(function() {
+
+        $('#logout').click(function() {
+            logout().done(function(response) {
+                window.location.href = '/login';
+            });
+        });
+        
+        listProducts().done(function(response) {
+
+            var productList = $('#product-list tbody');
+            productList.empty();
+
+            var products = response;
+
+            for (var i = 0; i < products.length; i++) {
+                var product = products[i];
+                var row = $('<tr>' +
+                    '<td>' + product.productID + '</td>' +
+                    '<td>' + product.name + '</td>' +
+                    '</tr>');
+
+                var deleteButton = $('<button>').text('Delete').click(function() {
+                    deleteProductById(product.productID).done(function() {
+                        row.remove();
+                    });
+                });
+                var detailsButton = $('<button>').text('Details').click(function() {
+                    window.location.href = '/product/' + product.productID;
+                });
+
+                row.append($('<td>').append(deleteButton));
+                row.append($('<td>').append(detailsButton));
+
+                $('#product-list tbody').append(row);
+            }
+        });
+        
+        $('form').on('submit', function(event) {
+
+            event.preventDefault();
+            var name = $('#name').val();
+            var description = $('#description').val();
+            
+            createProduct(name, description)
+            .done(function(response) {
+                var product = response;
+                var row = $('<tr>' +
+                    '<td>' + product.productID + '</td>' +
+                    '<td>' + product.name + '</td>' +
+                    '</tr>');
+
+                var deleteButton = $('<button>').text('Delete').click(function() {
+                    deleteProductById(product.productID).done(function() {
+                        row.remove();
+                    });
+                });
+                var detailsButton = $('<button>').text('Details').click(function() {
+                    window.location.href = '/product/' + product.productID;
+                });
+
+                row.append($('<td>').append(deleteButton));
+                row.append($('<td>').append(detailsButton));
+
+                $('#product-list tbody').append(row);
+
+            })
+            .fail(function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                var errorMessage = response.error;
+                $('#error-message').text(errorMessage);
+            });
+            $('#name').val('');
+            $('#description').val('');
+        });
+
+    });
+    </script>
+</body>
+</html>

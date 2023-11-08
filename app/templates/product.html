@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/static/js/script.js"></script>
+</head>
+<body>
+    <a href="{{ url_for('dashboard') }}">Voltar</a>
+
+    <div>
+        <h2 id="title"></h2>
+        <p id="description"></p>
+        <form>
+            <div>
+                <p id="error-message"></p>
+            </div>
+            <label for="period">Period (in days):</label><br>
+            <input type="number" id="period" name="period">
+            <input type="submit" value="Create Product">
+        </form>
+        <table id="key-list">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Key</th>
+                    <th>Period</th>
+                    <th>Created At</th>
+                    <th>Expires At</th>
+                    <th>Is Expired</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+<script>
+    $(document).ready(function() {
+
+        var id =  Number("{{ id }}");
+
+        getProductById(id).done(function(response) {
+
+            var keyList = $('#key-list tbody');
+            $('#title').text(response.name);
+            $('#description').text(response.description);
+
+            var keys = response.keys;
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var row = '<tr>' +
+                    '<td>' + key.keyID + '</td>' +
+                    '<td>' + key.key + '</td>' +
+                    '<td>' + key.period + '</td>' +
+                    '<td>' + key.createdAt + '</td>' +
+                    '<td>' + key.expiresAt + '</td>' +
+                    '<td>' + key.isExpired + '</td>' +
+                    '</tr>';
+                keyList.append(row);
+            }
+        });
+
+        $('form').on('submit', function(event) {
+
+            event.preventDefault();
+            var period = $('#period').val();
+
+            createKey(id, period)
+            .done(function(response) {
+                var key = response;
+                var row = '<tr>' +
+                    '<td>' + key.keyID + '</td>' +
+                    '<td>' + key.key + '</td>' +
+                    '<td>' + key.period + '</td>' +
+                    '<td>' + key.createdAt + '</td>' +
+                    '<td>' + key.expiresAt + '</td>' +
+                    '<td>' + key.isExpired + '</td>' +
+                    '</tr>';
+                $('#key-list tbody').append(row);
+            })
+            .fail(function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                var errorMessage = response.error;
+                $('#error-message').text(errorMessage);
+            });
+        });
+
+
+    });
+
+</script>
+
+</body>
+</html>
