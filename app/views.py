@@ -1,4 +1,5 @@
 from app import app
+from app.models import Product
 
 from flask_login import login_required, current_user
 from flask import render_template, redirect, url_for
@@ -29,4 +30,10 @@ def dashboard():
 @app.route('/product/<int:id>')
 @login_required
 def product(id):
+    try:
+        if not Product.query.get(id):
+            return render_template('404.html'), 404
+    except:
+        return render_template('404.html'), 404
+
     return render_template('product.html', id=id)
