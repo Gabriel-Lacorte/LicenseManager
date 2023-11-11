@@ -22,4 +22,5 @@ class Product(db.Model):
             'description': self.description,
             'keys': [key.to_dict() for key in Key.query.filter_by(product_id=self.id).all()]
         }
+
     

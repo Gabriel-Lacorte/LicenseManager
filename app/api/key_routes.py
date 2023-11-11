@@ -9,17 +9,14 @@ from flask import jsonify, request, Blueprint
 key_routes = Blueprint('key', __name__)
 
 
-# GET /api/keys/<key> -> Get key.
+# GET /api/keys/<key> -> Get key (and use).
 @key_routes.route('/<key>/', methods=['GET'])
 def use_key(key):
     key = Key.query.filter_by(key=key).first()
     
     if key:
-        now = datetime.utcnow()
-        if now > key.expires_at:
-            key.is_expired = True
-            db.session.commit()
-
+        key.usage_count += 1
+        db.session.commit()
         return jsonify(key.to_dict()), 200
         
     return jsonify({'error': 'Could not find the key.'}), 404
@@ -48,9 +45,7 @@ def create_keys():
     now = datetime.utcnow()
     expires_at = now + timedelta(minutes=period)
 
-    generated_key = token_hex(32)
-    while Key.query.filter_by(key=generated_key).first() is not None:
-        generated_key = token_hex(32)
+    generated_key = Key.generate_key()
 
     key = Key(key=generated_key, period=period, product_id=product_id, created_at=now, expires_at=expires_at, is_expired=False)
     
@@ -104,3 +99,4 @@ def update_keys(key):
         return jsonify(key.to_dict()), 200
     else:
         return jsonify({'error': 'Could not find the key.'}), 404
+    

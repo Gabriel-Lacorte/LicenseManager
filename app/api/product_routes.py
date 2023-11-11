@@ -30,11 +30,11 @@ def create_product():
     if not name or not description:
         return jsonify({'error': 'The input parameters were incorrect.'}), 400
     
-    if len(description) > 500:
-        return jsonify({'error': 'The description cannot be more than 500 characters.'}), 400
+    if len(description) > 300:
+        return jsonify({'error': 'The description cannot be more than 300 characters.'}), 400
     
-    if len(name) > 100:
-        return jsonify({'error': 'The product name cannot be more than 100 characters.'}), 400
+    if len(name) > 32:
+        return jsonify({'error': 'The product name cannot be more than 32 characters.'}), 400
     
     product = Product(name=name.strip(), description=description.strip())
     db.session.add(product)
@@ -55,7 +55,7 @@ def get_product_id(id):
         return jsonify(product.to_dict_keys()), 200
 
     return jsonify({'error': 'Could not find the product.'}), 404
-    
+   
 
 # DELETE /api/products/<int:id> -> Delete product by id
 @product_routes.route('/<int:id>', methods=['DELETE'])

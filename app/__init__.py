@@ -1,6 +1,6 @@
 from app.config import Config
 from app.api.key_routes import key_routes
-from app.api.auth_routes import auth_routes
+from app.api.user_routes import user_routes
 from app.api.product_routes import product_routes
 
 from .models import db, User
@@ -22,7 +22,7 @@ db.init_app(app)
 
 
 ### swagger specific ###
-SWAGGER_URL = '/swagger'
+SWAGGER_URL = '/docs'
 API_URL = '/static/swagger.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
@@ -32,7 +32,7 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     }
 )
 
-app.register_blueprint(auth_routes, url_prefix='/api/auth')
+app.register_blueprint(user_routes, url_prefix='/api/user')
 app.register_blueprint(key_routes, url_prefix='/api/keys')
 app.register_blueprint(product_routes, url_prefix='/api/products')
 app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)

@@ -6,7 +6,7 @@
   },
   "tags": [
     {
-      "name": "auth",
+      "name": "user",
       "description": "Handles user authentication"
     },
     {
@@ -19,10 +19,10 @@
     }
   ],
   "paths": {
-    "/api/auth/login": {
+    "/api/user": {
       "post": {
         "tags": [
-          "auth"
+          "user"
         ],
         "summary": "Login the user.",
         "parameters": [
@@ -57,12 +57,47 @@
             "description": "You are already logged in."
           }
         }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update the user's password.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "old_password": {
+                  "type": "string"
+                },
+                "new_password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password changed successfully."
+          },
+          "400": {
+            "description": "The input parameters were incorrect."
+          },
+          "401": {
+            "description": "The old password is incorrect."
+          }
+        }
       }
     },
-    "/api/auth/logout": {
+    "/api/user/logout": {
       "post": {
         "tags": [
-          "auth"
+          "user"
         ],
         "summary": "Logout the user.",
         "responses": {
