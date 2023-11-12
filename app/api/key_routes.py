@@ -1,7 +1,6 @@
-from app.models import Key, Product, db
+from app.models import Key, Product, User, db
 
 from secrets import token_hex
-from flask_login import login_required
 from datetime import datetime, timedelta
 from flask import jsonify, request, Blueprint
 
@@ -24,7 +23,7 @@ def use_key(key):
 
 # POST /api/keys -> Create a new key for a product.
 @key_routes.route('', methods=['POST'])
-@login_required
+@User.auth_required
 def create_keys():
     try:
         data = request.get_json()
@@ -40,7 +39,7 @@ def create_keys():
         return jsonify({'error': 'The limit in days is 999.'}), 400
     
     if not Product.query.get(product_id):
-        return jsonify({'error': 'Could not find the product.'}), 400
+        return jsonify({'error': 'Could not find the product.'}), 404
     
     now = datetime.utcnow()
     expires_at = now + timedelta(minutes=period)
@@ -57,7 +56,7 @@ def create_keys():
 
 # DELETE /api/keys/<key> -> Delete key.
 @key_routes.route('/<key>/', methods=['DELETE'])
-@login_required
+@User.auth_required
 def delete_keys(key):    
     key = Key.query.filter_by(key=key).first()
     
@@ -71,7 +70,7 @@ def delete_keys(key):
 
 # PUT /api/keys/<key> -> Increases the key period
 @key_routes.route('/<key>/', methods=['PUT'])
-@login_required
+@User.auth_required
 def update_keys(key):
     try:
         data = request.get_json()

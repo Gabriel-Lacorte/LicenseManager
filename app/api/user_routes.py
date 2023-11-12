@@ -28,39 +28,19 @@ def login():
     
     if user and user.password == password.strip():
         login_user(user)
-        return jsonify({"message": "Login successful."}), 200
-    else:
-        return jsonify({"error": "Invalid username or password"}), 401
+        if user.api_key:
+            return jsonify({"message": "Login successful.", "api_key": user.api_key}), 200
+        
+        user.api_key = User.generate_api_key()
+        db.session.commit()
+        return jsonify({"message": "Login successful.", "api_key": user.api_key}), 200
 
+    return jsonify({"error": "Invalid username or password"}), 401
 
-# PUT /api/user -> Change the user's password.
-@user_routes.route('', methods=['PUT'])
-@login_required
-def change_password():
-    try:
-        data = request.get_json()
-        old_password = data.get('old_password').strip()
-        new_password = data.get('new_password').strip()
-    except:
-        return jsonify({"error": "The input parameters were incorrect."}), 400
-    
-    if not old_password or not new_password:
-        return jsonify({"error": "The input parameters were incorrect."}), 400
-    
-    if len(new_password) > 100:
-        return jsonify({"error": "The password cannot be more than 100 characters."}), 400
-    
-    if not check_password_hash(current_user.password, old_password):
-        return jsonify({"error": "The old password is incorrect."}), 400
-    
-    current_user.password = new_password
-    db.session.commit()
-    
-    return jsonify({"message": "Password changed successfully."}), 200
 
 # POST /api/user/logout -> Logout the user.
 @user_routes.route('/logout', methods=['POST'])
-@login_required
+@User.auth_required
 def logout():
     logout_user()
     return jsonify({"message": "Logout successful."})

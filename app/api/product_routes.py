@@ -1,4 +1,4 @@
-from app.models import Product, Key, db
+from app.models import Product, Key, User, db
 
 from flask_login import login_required
 from flask import jsonify, request, Blueprint
@@ -9,7 +9,7 @@ product_routes = Blueprint('product', __name__)
 
 # GET /api/products -> List All Products.
 @product_routes.route('', methods=['GET'])
-@login_required
+@User.auth_required
 def get_products():
     all_products = Product.query.all()
 
@@ -18,7 +18,7 @@ def get_products():
 
 # POST /api/products -> Create a new product
 @product_routes.route('', methods=['POST'])
-@login_required
+@User.auth_required
 def create_product():
     try:
         data = request.get_json()
@@ -45,7 +45,7 @@ def create_product():
 
 # GET /api/products/<int:id> -> Get product by id.
 @product_routes.route('/<int:id>/', methods=['GET'])
-@login_required
+@User.auth_required
 def get_product_id(id):
     if len(str(id)) >= 19:
         return jsonify({'error': 'The product id cannot be more than 100.'}), 400
@@ -59,7 +59,7 @@ def get_product_id(id):
 
 # DELETE /api/products/<int:id> -> Delete product by id
 @product_routes.route('/<int:id>', methods=['DELETE'])
-@login_required
+@User.auth_required
 def delete_product(id):
     if len(str(id)) >= 19:
         return jsonify({'error': 'The product id cannot be more than 100.'}), 400
