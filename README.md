@@ -1,18 +1,25 @@
-# License Manager
+# 🔑 License Manager
 
 This is a license manager that allows you to create products and generate keys.
+
 
 ## 🚧 Attention 🚧
 
 This project is currently under development and is not yet functional!
 
+
 ## Initial Setup
 
 1. Clone the repository.
-2. Install the dependencies with `pip install -r requirements.txt`.
-3. Run the project with `python run.py`.
-
-The default user is "admin" with the password "123"
+2. Install the dependencies with:
+  ```shell
+  pip install -r requirements.txt
+  ```
+4. Run the project with:
+  ```shell
+  python run.py
+  ```
+*The default user is **"admin"** with the password **"123"***
 
 ## API Documentation
 
