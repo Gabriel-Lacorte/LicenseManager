@@ -8,11 +8,14 @@ from .models import db, User
 
 from flask import Flask
 from flask_login import LoginManager
+from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 lm = LoginManager(app)
 lm.init_app(app)
