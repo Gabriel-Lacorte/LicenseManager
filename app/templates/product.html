@@ -1,95 +1,517 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/static/js/script.js"></script>
 </head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+    -moz-appearance: textfield;
+    }
+
+    body, html {
+        font: normal 16px 'Roboto';
+        background-color: #202428;
+        color: #fff;
+        padding: 0 100px;
+    }
+
+
+    .back {
+        text-decoration: none;
+        display: flex;
+        font-size: 18px;
+        padding-bottom: 28px;
+        padding-top: 18px;
+
+    }
+
+    #header-container {
+        padding-bottom: 0;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 50px 0;
+        padding-bottom: 32px;
+    }
+
+    .header-container h1 {
+        font-size: 38px;
+    }
+
+    .header-container img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .info-container {
+        display: flex;
+        justify-content: left;
+        flex-direction: column;
+        width: 50%;
+        padding-top: 32px;
+    }
+
+    .info-container .description {
+        font-size: 18px;
+        padding-bottom: 32px;
+    }
+
+    .info-container .product-buttons {
+        display: flex;
+        gap: 23px;
+    }
+
+    .info-container .product-buttons button {
+        width: 100px;
+        height: 40px;
+        gap: 32px;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+
+    .product-buttons .delete {
+        background-color: #B62020;
+    }
+
+
+    .product-buttons .delete:hover {
+        background-color: #8e1212;
+    }
+
+    .create-button {
+        width: 250px;
+        height: 60px;
+        border-radius: 8px;
+        background-color: #4720B6;
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .create-button:hover {
+        background-color: #371499;
+        transition: all 0.1s ease-out;
+    }
+
+    hr {
+        background-color: #25292E;
+        border: none;
+        height: 3px;
+    }
+
+    .keys-title {
+        padding: 20px 0;
+        margin: 20px 0;
+        font-weight: 500;
+        font-size: 18px;
+        background-color: #25292E;
+        border-radius: 4px;
+    }
+
+    .key-item {
+        margin-bottom: 30px;
+        font-size: 18px;
+    }
+    
+    .keys-title, .key-item {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+    }
+    
+    .keys-title p, .key-item p {
+        text-align: center;
+    }
+    
+    .key-item p {
+        text-align: center;
+    }
+
+    
+    .key-item .delete {
+        cursor: pointer;
+        font-weight: bold;
+        color: #B62020;
+    }
+
+    .modal-overlay {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    .create-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 750px;
+        height: 350px;
+        background-color: #25292E;
+        border-radius: 14px;
+    }
+
+    .number-input  {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding-bottom: 30px;
+        padding-top: 10px;
+    }
+    
+    .number-input input {
+        width: 400px;
+        text-align: center;
+        margin-bottom: 0;
+        margin-top: 0;
+        
+    }
+
+    .number-input button {
+        height: 50px;
+        width: 80px;
+        border: none;
+        border: 2px solid #394049;
+        border-radius: 14px;
+        background-color: #292C32;
+        color: white;
+        font-size: 22px;
+        margin-bottom: 0;
+
+    }
+
+    .create-title {
+        font-size: 32px;
+        font-weight: medium;
+        padding-bottom: 28px;
+    }
+
+    .create-container form {
+        padding-top: 32px;
+    }
+
+    .create-key-input, .create-key-submit {
+        display: block;
+        width: 600px;
+        height: 50px;
+        border: 2px solid #394049;
+        border-radius: 14px;
+        background-color: #292C32;
+        margin-top: 10px;
+        margin-bottom: 32px;
+        color: #fff;
+        padding: 0 10px;
+        font-size: 18px;
+        font-family: 'Roboto';
+    }
+    
+    .create-key-submit {
+        height: 60px;
+        background-color: #4720B6;
+        margin-top: 18px;
+        font-size: 18px;
+        font-weight: medium;
+        cursor: pointer;
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 0;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .create-key-submit:hover {
+        background-color: #371499;
+        transition: all 0.1s ease-out;
+    }
+
+    .create-form {
+        padding-top: 50px;
+        font-size: 18px;
+        font-weight: medium;
+    }
+
+    .error-text {
+        font-size: 18px;
+        color: #B62020;
+    }
+
+    .create-container hr {
+        background-color: #35393F;
+    }
+</style>
 <body>
-    <a href="{{ url_for('dashboard') }}">Voltar</a>
-
-    <div>
-        <h2 id="title"></h2>
-        <p id="description"></p>
-        <form>
+    <header>
+        <div class="header-container" id="header-container">
+            <h1 id="productName"></h1>
             <div>
-                <p id="error-message"></p>
+                <img src="https://ui-avatars.com/api/?name=Admin&rounded=true&background=4720B6&color=fff" alt="">
             </div>
-            <label for="period">Period (in days):</label><br>
-            <input type="number" id="period" name="period">
-            <input type="submit" value="Create Product">
-        </form>
-        <table id="key-list">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Key</th>
-                    <th>Period</th>
-                    <th>Created At</th>
-                    <th>Expires At</th>
-                    <th>Is Expired</th>
-                </tr>
-            </thead>
-            <tbody>
+        </div>
+        <a href="/dashboard" class="back">Back</a>
+    </header>
 
-            </tbody>
-        </table>
-    </div>
-<script>
-    $(document).ready(function() {
+    <hr>
 
-        var id =  Number("{{ id }}");
+    <section class="info-container">
+        <p class="description" id="productDescription"></p>
+        <div class="product-buttons">
+            <button class="delete" id="deleteProduct">DELETE</button>
+        </div>
+    </section>
 
-        getProductById(id).done(function(response) {
+    <header>
+        <div class="header-container">
+            <h1>Keys</h1>
+            <button class="create-button" id="createButton">CREATE KEY</button>
+        </div>
+    </header>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="create-container">
+            <div>
+                <h1 class="create-title">Create Key</h1>
+                <hr>
+                <form class="create-form">
+                    <label for="period">Period (Days)</label>
+                    <div class="number-input">
+                        <button class="number-btn" onclick="decreaseValue()" id="minus-btn">&minus;</button>
+                        <input type="number" class="create-key-input" id="period" oninput="this.value = Math.abs(this.value)">
+                        <button class="number-btn" onclick="increaseValue()" id="plus-btn">&plus;</button>
+                    </div>
+                    <p class="error-text" id="error"></p>
+                    <button class="create-key-submit" id="createKeyButton">Create Key</button>
+                </form>
+            </div>
+        </div>
+    </div>  
 
-            var keyList = $('#key-list tbody');
-            $('#title').text(response.name);
-            $('#description').text(response.description);
+    <hr>
 
-            var keys = response.keys;
-            for (var i = 0; i < keys.length; i++) {
-                var key = keys[i];
-                var row = '<tr>' +
-                    '<td>' + key.keyID + '</td>' +
-                    '<td>' + key.key + '</td>' +
-                    '<td>' + key.period + '</td>' +
-                    '<td>' + key.createdAt + '</td>' +
-                    '<td>' + key.expiresAt + '</td>' +
-                    '<td>' + key.isExpired + '</td>' +
-                    '</tr>';
-                keyList.append(row);
-            }
-        });
-
-        $('form').on('submit', function(event) {
-
-            event.preventDefault();
-            var period = $('#period').val();
-
-            createKey(id, period)
-            .done(function(response) {
-                var key = response;
-                var row = '<tr>' +
-                    '<td>' + key.keyID + '</td>' +
-                    '<td>' + key.key + '</td>' +
-                    '<td>' + key.period + '</td>' +
-                    '<td>' + key.createdAt + '</td>' +
-                    '<td>' + key.expiresAt + '</td>' +
-                    '<td>' + key.isExpired + '</td>' +
-                    '</tr>';
-                $('#key-list tbody').append(row);
-            })
-            .fail(function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                var errorMessage = response.error;
-                $('#error-message').text(errorMessage);
-            });
-        });
-
-
-    });
-
-</script>
-
+    <section class="keys-container">
+        <div class="keys-title">
+            <p>Key</p>
+            <p>Period</p>
+            <p>Expired</p>
+            <p>Expires At</p>
+            <p>Action</p>
+        </div>
+        <div class="products-list" id="keysList">
+        </div>
+    </section>
+    
 </body>
+<script>
+    const urlParts = document.URL.split('/');
+    const productID = urlParts.at(-1)
+    document.addEventListener("DOMContentLoaded", () => {
+            const createButton = document.getElementById("createButton");
+            const modalOverlay = document.getElementById("modalOverlay");
+            const keysList = document.getElementById("keysList");
+            const createKeyButton = document.getElementById("createKeyButton");
+            const plusButton = document.getElementById("plus-btn");
+            const minusButton = document.getElementById("minus-btn");
+            const deleteProductButton = document.getElementById("deleteProduct")
+            
+            function openModal() {
+                modalOverlay.style.display = "flex";
+            }
+            
+            function closeModal(event) {
+                if (event.target == modalOverlay) {
+                    modalOverlay.style.display = "none";
+                }
+            }
+            function increaseValue(event) {
+                event.preventDefault();
+                var value = parseInt(document.getElementById('period').value, 10);
+                value = isNaN(value) ? 0 : value;
+                value++;
+                document.getElementById('period').value = value;
+            }
+            
+            function decreaseValue(event) {
+                event.preventDefault();
+                var value = parseInt(document.getElementById('period').value, 10);
+                value = isNaN(value) ? 0 : value;
+                if (value > 0) {
+                    value--;
+                }
+                document.getElementById('period').value = value;
+            }
+            
+            createKeyButton.addEventListener('click', createKey);
+            createButton.addEventListener('click', openModal);
+            plusButton.addEventListener('click', increaseValue);
+            minusButton.addEventListener('click', decreaseValue);
+            window.addEventListener('click', closeModal);
+            deleteProductButton.addEventListener('click', deleteProduct);
+
+            fetch('/api/products/' + productID, {
+                method: 'GET',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("productName").innerText = data.name;
+                document.getElementById("productDescription").innerText = data.description;
+
+                data.keys.forEach(key => {
+                    loadKey(key);
+                })
+            })
+            .catch(error => {
+                console.log("Error: " + error);
+            });
+
+        });
+
+        function loadKey(key) {
+            const keyItem = document.createElement('div');
+            keyItem.classList.add('key-item')
+            keysList.appendChild(keyItem)
+
+            const keyNumber = document.createElement('p');
+            keyNumber.innerText = key.key;
+            keyItem.appendChild(keyNumber)
+
+            const keyPeriod = document.createElement('p');
+            keyPeriod.innerText = `${key.period} Day(s)`;
+            keyItem.appendChild(keyPeriod)
+
+            const isExpired = document.createElement('p');
+            isExpired.innerText = key.isExpired;
+            keyItem.appendChild(isExpired)
+
+            const expiresAt = document.createElement('p');
+            expiresAt.innerText = key.expiresAt;
+            keyItem.appendChild(expiresAt)
+
+            const deleteButton = document.createElement('p');
+            deleteButton.innerText = "DELETE";
+            deleteButton.classList.add('delete');
+            keyItem.appendChild(deleteButton);
+
+            deleteButton.addEventListener('click', function() {
+                deleteKey(key.key)
+            });
+
+        }   
+
+        function createKey(event) {
+            event.preventDefault();
+
+            const keyPeriod = document.getElementById('period').value;
+            
+
+            fetch('/api/keys', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: productID,
+                    period: keyPeriod
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                loadKey(data);
+                document.getElementById("modalOverlay").style.display = "none";
+            })
+            .catch(error => {
+                document.getElementById('error').innerText = error.message;
+            });
+        }
+
+
+        function deleteKey(key) {
+            fetch('/api/keys/' + key, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                window.location.reload();
+            })
+            .catch(error => {
+                console.log("Error: " + error)
+            });
+        }
+
+        function deleteProduct() {
+            fetch('/api/products/' + productID, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                window.location.href = '/dashboard';
+            })
+            .catch(error => {
+                console.log("Error: " + error)
+            });
+        }
+
+    </script>
 </html>
+

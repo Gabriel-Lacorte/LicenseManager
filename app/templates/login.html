@@ -1,42 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
-</head>
-<body>
-    <form>
-        <div>
-            <p id="error-message"></p>
-        </div>
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br>
-        <input type="submit" value="Login">
-    </form>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/static/js/script.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('form').on('submit', function(event) {
-                event.preventDefault();
-                
-                var username = $('#username').val();
-                var password = $('#password').val();
-                
-                login(username, password)
-                .done(function(response) {
-                    window.location.href = '/dashboard';
-                })
-                .fail(function(jqXHR) {
-                    var response = JSON.parse(jqXHR.responseText);
-                    var errorMessage = response.error;
-                    $('#error-message').text(errorMessage);
-                });
-            });
-        });
-    </script>
+   <title>Login</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   -moz-box-sizing: border-box;
+}
+body, html {
+   width: 100vw;
+   height: 100vh;
+   font: normal 16px 'Roboto';
+   color: #fff;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: #202428;
+}
+
+.login-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 80vw;
+   height: 80%;
+   max-width: 600px;
+   max-height: 550px;
+   background-color: #25292E;
+   border-radius: 14px;
+}
+
+.login-title {
+   font-size: 32px;
+   font-weight: medium;
+   padding-bottom: 32px;
+}
+
+.login-input, .login-submit {
+   font-family: 'Roboto';
+   display: block;
+   width: 50vw;
+   height: 30vh;
+   max-width: 500px;
+   max-height: 50px;
+   border: 2px solid #394049;
+   border-radius: 14px;
+   background-color: #292C32;
+   margin-top: 10px;
+   margin-bottom: 32px;
+   color: #fff;
+   padding: 0 10px;
+   font-size: 18px;
+}
+
+.login-submit {
+   max-height: 60px;
+   background-color: #4720B6;
+   margin-top: 18px;
+   font-size: 18px;
+   font-weight: medium;
+   cursor: pointer;
+   border: none;
+   margin-top: 10px;
+   font-weight: 500;
+}
+
+.login-submit:hover {
+    background-color: #371499;
+    transition: all 0.1s ease-out;
+}
+
+.login-form {
+   padding-top: 50px;
+   font-size: 18px;
+   font-weight: medium;
+}
+
+.error-text {
+    font-size: 18px;
+    color: #B62020;
+}
+
+hr {
+   background-color: #35393F;
+   height: 3px;
+   border: none;
+}
+@media (max-width: 600px) {
+   .login-container {
+      width: 90vw;
+   }
+   .login-input, .login-submit {
+      width: 80vw;
+   }
+}
+
+
+</style>
+<body>
+   <section class="login-container">
+       <div>
+           <h1 class="login-title">Log in</h1>
+           <hr>
+           <form class="login-form">
+               <label for="">Username</label>
+               <input type="text" class="login-input" id="username" placeholder="Username">
+               <label for="">Password</label>
+               <input type="password" class="login-input" id="password" placeholder="•••••••••">
+               <p class="error-text" id="error"></p>
+               <button class="login-submit">Log in</button>
+            </form>
+       </div>
+   </section>
 </body>
+<script>
+
+document.querySelector('.login-form').addEventListener('submit', function(event) {
+   event.preventDefault();
+
+   const username = document.getElementById('username').value;
+   const password = document.getElementById('password').value;
+
+   fetch('/api/user', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json'
+           },
+           body: JSON.stringify({
+               username: username,
+               password: password
+           })
+       })
+       .then(response => {
+           if (!response.ok) {
+               return response.json().then(error => {
+                  throw new Error(error.error);
+               });
+           }
+           return response.json();
+       })
+       .then(data => {
+           window.location.href = '/dashboard';
+       })
+       .catch(error => {
+           document.getElementById('error').innerText = error.message;
+       });
+});
+</script>
 </html>

@@ -1,117 +1,405 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/static/js/script.js"></script>
 </head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+
+    body, html {
+        font: normal 16px 'Roboto';
+        background-color: #202428;
+        color: #fff;
+        padding: 0 100px;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 50px 0;
+        padding-bottom: 30px;
+    }
+
+    .header-container h1 {
+        font-size: 38px;
+    }
+
+    .header-container img {
+        width: 45px;
+        height: 45px;
+    } 
+
+    .cards-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-top: 30px;
+        padding-bottom: 100px;
+    }
+
+    .info-card {
+        display: flex;
+        align-items: center;
+        width: 380px;
+        height: 130px;
+        background-color: #25292E;
+        border-radius: 14px;
+    }
+
+    .info-card .title {
+        font-size: 18px;
+    }
+
+    .info-card .card-text {
+        padding-left: 30px;
+    }
+
+    .info-card .content {
+        font-size: 38px;
+        font-weight: bold;
+        margin-top: 3px;
+    }
+
+    .info-card .card-image {
+        padding-left: 30px;
+    }
+
+    .create-button {
+        width: 250px;
+        height: 60px;
+        border-radius: 8px;
+        background-color: #4720B6;
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .create-button:hover {
+        background-color: #371499;
+        transition: all 0.1s ease-out;
+    }
+
+    hr {
+        background-color: #25292E;
+        border: none;
+        height: 3px;
+    }
+
+    .products-container {
+        padding-top: 30px;
+    }
+
+    .products-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 500;
+        font-size: 18px;
+        padding-bottom: 20px;
+    }
+
+    .products-title p {
+        flex: 1;
+        text-align: left;
+    }
+
+    .product-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 80px;
+        background-color: #25292E;
+        padding: 0 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        cursor: pointer;
+    }
+
+    .product-item .title {
+        flex: 1;
+        font-size: 18px;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .product-item .content {
+        flex: 1;
+        font-size: 18px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .modal-overlay {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    .create-product-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 750px;
+        height: 650px;
+        background-color: #25292E;
+        border-radius: 14px;
+    }
+
+    .create-product-title {
+        font-size: 32px;
+        font-weight: medium;
+        padding-bottom: 28px;
+    }
+
+    .create-product-container form {
+        padding-top: 32px;
+    }
+
+    .create-product-input, .create-product-submit, .product-description {
+        display: block;
+        width: 600px;
+        height: 50px;
+        border: 2px solid #394049;
+        border-radius: 14px;
+        background-color: #292C32;
+        margin-top: 10px;
+        margin-bottom: 32px;
+        color: #fff;
+        padding: 0 10px;
+        font-size: 18px;
+        font-family: 'Roboto';
+    }
+
+    .product-description {
+        height: 200px;
+        padding: 10px 10px;
+        resize: none;
+    }
+
+    .create-product-submit {
+        height: 60px;
+        background-color: #4720B6;
+        margin-top: 18px;
+        font-size: 18px;
+        font-weight: medium;
+        cursor: pointer;
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 0;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .create-product-submit:hover {
+        background-color: #371499;
+        transition: all 0.1s ease-out;
+    }
+
+    .create-product-form {
+        padding-top: 50px;
+        font-size: 18px;
+        font-weight: medium;
+    }
+
+    .error-text {
+        font-size: 18px;
+        color: #B62020;
+    }
+
+    .create-product-container hr {
+        background-color: #35393F;
+    }
+</style>
 <body>
-    <button id="logout">Logout</button>
-
-    <div>
-        <h2>Products</h2>
-        <form>
+    <header>
+        <div class="header-container">
+            <h1>Dashboard</h1>
             <div>
-                <p id="error-message"></p>
+                <img src="https://ui-avatars.com/api/?name=Admin&rounded=true&background=4720B6&color=fff" alt="">
             </div>
-            <label for="name">Name:</label><br>
-            <input type="text" id="name" name="name"><br>
-            <label for="description">Description:</label><br>
-            <input type="text" id="description" name="description"><br>
-            <input type="submit" value="Create Product">
-        </form>
-        <table id="product-list">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Delete</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
+        </div>
+    </header>
 
-            </tbody>
-        </table>
+    <hr>
+
+    <section class="cards-container">
+        <div class="info-card">
+            <div>
+                <img class="card-image" src="static/key_icon.png" alt="">
+            </div>
+            <div class="card-text">
+                <p class="title">Created Keys</p>
+                <p class="content">82</p>
+            </div>
+        </div>
+        <div class="info-card">
+            <div>
+                <img class="card-image" src="static/product_icon.png" alt="">
+            </div>
+            <div class="card-text">
+                <p class="title">Created Products</p>
+                <p class="content">3</p>
+            </div>
+        </div>
+        <div class="info-card">
+            <div>
+                <img class="card-image" src="static/user_icon.png" alt="">
+            </div>
+            <div class="card-text">
+                <p class="title">Key Usages</p>
+                <p class="content">332</p>
+            </div>
+        </div>
+    </section>
+
+    <header>
+        <div class="header-container">
+            <h1>Products</h1>
+            <button class="create-button" id="createButton">CREATE PRODUCTS</button>
+        </div>
+    </header>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="create-product-container">
+            <div>
+                <h1 class="create-product-title">Create Product</h1>
+                <hr>
+                <form class="create-product-form">
+                    <label for="name">Name</label>
+                    <input type="text" class="create-product-input" id="name" placeholder="Name">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" cols="30" rows="10" class="product-description"></textarea>
+                    <p class="error-text" id="error"></p>
+                    <button class="create-product-submit" id="createProductButton">Create Product</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <script>
-    $(document).ready(function() {
 
-        $('#logout').click(function() {
-            logout().done(function(response) {
-                window.location.href = '/login';
-            });
-        });
+    <hr>
+
+    <section class="products-container">
+        <div class="products-title">
+            <p>Name</p>
+            <p>Description</p>
+        </div>
+        <div class="products-list" id="productsList"></div>
+    </section>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const createButton = document.getElementById("createButton");
+        const modalOverlay = document.getElementById("modalOverlay");
+        const productsList = document.getElementById("productsList");
+        const createProductButton = document.getElementById("createProductButton");
         
-        listProducts().done(function(response) {
+        function openModal() {
+            modalOverlay.style.display = "flex";
+        }
 
-            var productList = $('#product-list tbody');
-            productList.empty();
-
-            var products = response;
-
-            for (var i = 0; i < products.length; i++) {
-                var product = products[i];
-                var row = $('<tr>' +
-                    '<td>' + product.productID + '</td>' +
-                    '<td>' + product.name + '</td>' +
-                    '</tr>');
-
-                var deleteButton = $('<button>').text('Delete').click(function() {
-                    deleteProductById(product.productID).done(function() {
-                        row.remove();
-                    });
-                });
-                var detailsButton = $('<button>').text('Details').click(function() {
-                    window.location.href = '/product/' + product.productID;
-                });
-
-                row.append($('<td>').append(deleteButton));
-                row.append($('<td>').append(detailsButton));
-
-                $('#product-list tbody').append(row);
+        function closeModal(event) {
+            if (event.target == modalOverlay) {
+                modalOverlay.style.display = "none";
             }
-        });
-        
-        $('form').on('submit', function(event) {
+        }
 
-            event.preventDefault();
-            var name = $('#name').val();
-            var description = $('#description').val();
-            
-            createProduct(name, description)
-            .done(function(response) {
-                var product = response;
-                var row = $('<tr>' +
-                    '<td>' + product.productID + '</td>' +
-                    '<td>' + product.name + '</td>' +
-                    '</tr>');
+        createProductButton.addEventListener('click', createProduct);
+        createButton.addEventListener('click', openModal);
+        window.addEventListener('click', closeModal);
 
-                var deleteButton = $('<button>').text('Delete').click(function() {
-                    deleteProductById(product.productID).done(function() {
-                        row.remove();
-                    });
+        fetch('/api/products', {
+            method: 'GET',
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.error);
                 });
-                var detailsButton = $('<button>').text('Details').click(function() {
-                    window.location.href = '/product/' + product.productID;
-                });
-
-                row.append($('<td>').append(deleteButton));
-                row.append($('<td>').append(detailsButton));
-
-                $('#product-list tbody').append(row);
-
-            })
-            .fail(function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                var errorMessage = response.error;
-                $('#error-message').text(errorMessage);
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.forEach(product => {
+                loadProduct(product);
             });
-            $('#name').val('');
-            $('#description').val('');
+        })
+        .catch(error => {
+            console.log("Error: " + error);
         });
 
     });
-    </script>
-</body>
+
+
+    function loadProduct(product) {
+        const productItem = document.createElement('div');
+        productItem.classList.add('product-item');
+        productsList.appendChild(productItem);
+
+        const productTitle = document.createElement('p');
+        productTitle.classList.add('title');
+        productTitle.innerText = product.name;
+        productItem.appendChild(productTitle);
+
+        const productDescription = document.createElement('p');
+        productDescription.classList.add('content');
+        productDescription.innerText = product.description;
+        productItem.appendChild(productDescription);
+
+        productItem.onclick = function() {
+            window.location.href = '/product/' + product.productID;
+        };
+    }
+
+    function createProduct(event) {
+        event.preventDefault();
+
+        const productName = document.getElementById('name').value;
+        const productDesc = document.getElementById('description').value;
+
+        fetch('/api/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: productName,
+                description: productDesc
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.error);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            loadProduct(data);
+            document.getElementById("modalOverlay").style.display = "none";
+        })
+        .catch(error => {
+            document.getElementById('error').innerText = error.message;
+        });
+    }
+</script>
 </html>
