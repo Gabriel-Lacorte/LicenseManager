@@ -2,12 +2,6 @@
 
 This is a license manager that allows you to create products and generate keys.
 
-
-## 🚧 Attention 🚧
-
-This project is currently under development and is not yet functional!
-
-
 ## Initial Setup
 
 1. Clone the repository.
@@ -28,6 +22,20 @@ The application has a swagger API documentation available at `/docs`. The docume
 ## Usage with Python
 
 You can use the API with Python using the package in the python_package folder, it contains some snippets on how to communicate with the server.
+
+## Images
+
+Login
+
+![Login](img/login.png)
+
+Dashboard
+
+![Dashboard](img/dashboard.png)
+
+Product Dashboard
+
+![Product](img/product.png)
 
 ## License
 
