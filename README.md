@@ -23,6 +23,36 @@ The application has a swagger API documentation available at `/docs`. The docume
 
 You can use the API with Python using the package in the python_package folder, it contains some snippets on how to communicate with the server.
 
+### Snippets
+
+Verifying a Key:
+```py
+from license_package import LicenseManager
+
+license_manager = LicenseManager("http://127.0.0.1:5000")
+
+is_expired, error = license_manager.is_expired("CDFC-E5B0-1A5B-9F94")
+if is_expired:
+    print(f"Error: {error}")
+else:
+    print(f"The key is valid")
+```
+
+Getting Key Info:
+```py
+import json
+from license_package import LicenseManager
+
+license_manager = LicenseManager("http://localhost:5000")
+
+key_info, error = license_manager.get_key_info("CDFC-E5B0-1A5B-9F94")
+if key_info is not None:
+    formatted_key_info = json.dumps(key_info, indent=4)
+    print(f"Key Info: {formatted_key_info}")
+else:
+    print(f"Error: {error}")
+```
+
 ## Images
 
 Login
