@@ -43,7 +43,7 @@ Getting Key Info:
 import json
 from license_package import LicenseManager
 
-license_manager = LicenseManager("http://localhost:5000")
+license_manager = LicenseManager("http://127.0.0.1:5000")
 
 key_info, error = license_manager.get_key_info("CDFC-E5B0-1A5B-9F94")
 if key_info is not None:
